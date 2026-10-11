@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Node (frontend, later phases)
+node_modules/
+
+# Environment files and secrets: never commit
+.env
+.env.*
+!.env.example
+
+# Local experiment and runtime artifacts
+mlruns/
+*.log
+
+# Editor and OS
+.vscode/
+.idea/
+.DS_Store

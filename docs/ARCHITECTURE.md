@@ -64,6 +64,32 @@ flowchart TD
     dash["React dashboard"] -->|REST| api
 ```
 
+## Demo shop (IMPLEMENTED as code, not yet containerized)
+
+```mermaid
+flowchart LR
+    client["Client"] -->|HTTP| gateway
+    gateway --> users
+    gateway --> catalog
+    gateway --> checkout
+    checkout --> users
+    checkout --> catalog
+    users --> db[("PostgreSQL")]
+    catalog --> db
+    checkout --> db
+```
+
+Four processes started from one Python package
+([ADR-0002](adr/0002-shop-one-package-four-processes.md)). The gateway is the
+only entry point and owns no data. users, catalog and checkout each own one
+table in a shared PostgreSQL database and reach each other's data only over
+HTTP. Every address is supplied through an environment variable.
+
+The exact interface — start commands, environment variables, endpoints and
+failure behaviour — is the connection contract in
+[PROJECT_MAP.md](PROJECT_MAP.md). How these processes are packaged, networked
+and started is Phase 1 work that has not been done yet.
+
 ## The path of one failure (PROPOSED)
 
 ```mermaid
@@ -103,7 +129,7 @@ predict it and then measure it.
 
 | Component | Responsibility | Phase | Status |
 |---|---|---|---|
-| Demo shop | A realistic target that can fail in interesting ways | 1 | Proposed |
+| Demo shop | A realistic target that can fail in interesting ways | 1 | **Code implemented**, verified as local processes on 2026-10-11; not yet containerized |
 | Prometheus | Scrape metrics, store time series, evaluate alert rules | 2 | Proposed |
 | OTel Collector | Receive traces and logs, forward them to stores | 2 | Proposed |
 | Loki, Tempo | Store logs and traces | 2 | Proposed |
@@ -125,6 +151,7 @@ development machine on 2026-10-11.
 | Listener | Port | Protocol | Dialled by |
 |---|---|---|---|
 | Shop gateway | 8000 | HTTP | Load scripts, browser |
+| Shop internal services | chosen when containerized | HTTP | Gateway, checkout |
 | Prometheus | 9090 | HTTP | Grafana, SentinelOps worker |
 | Alertmanager | 9093 | HTTP | Prometheus |
 | OTel Collector | 4317, 4318 | OTLP over gRPC, OTLP over HTTP | Shop services |
@@ -151,7 +178,7 @@ reading container output — is decided in Phase 2.
 
 | If this is down | Expected behaviour |
 |---|---|
-| A shop dependency (users, catalog) | The caller times out or gets a connection error and returns a clear 5xx; it does not hang |
+| A shop dependency (users, catalog) | The caller times out or gets a connection error and returns a clear 5xx; it does not hang. **Implemented**: 502 and 504, see PROJECT_MAP.md |
 | Prometheus | No new alerts. SentinelOps must surface "monitoring is blind", not silence |
 | Alertmanager or the webhook | Alerts are retried by Alertmanager; ingest must be idempotent |
 | Redis | Incidents are still recorded; investigations queue up or fail visibly |
@@ -172,3 +199,4 @@ reading container output — is decided in Phase 2.
 | Date | Change |
 |---|---|
 | 2026-10-11 | Initial proposal approved as the Phase 0 architecture |
+| 2026-10-11 | Demo shop application code implemented as one package, four processes |

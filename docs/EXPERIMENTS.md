@@ -6,6 +6,7 @@ Measured results only. An experiment that has not been executed is marked
 | ID | Date | Title | Status |
 |---|---|---|---|
 | EXP-001 | 2026-10-11 | Memory baseline and container OOM behaviour | **NOT RUN** — assigned to the owner |
+| EXP-002 | 2026-10-11 | Memory footprint of the shop as local processes | Run once; indicative only |
 
 ---
 
@@ -97,3 +98,75 @@ records them here unedited and reviews the interpretation.
 ### Raw artifacts
 
 None yet.
+
+---
+
+## EXP-002: Memory footprint of the shop as local processes
+
+- **Status:** Run once by the agent. Indicative only.
+- **Date:** 2026-10-11
+- **Objective:** Get a first real number for how much memory the shop needs,
+  to inform the memory limits set when it is containerized.
+- **Hypothesis:** None stated in advance; this was a measurement taken during
+  end-to-end verification.
+- **Environment:** Arch Linux, kernel 7.2.6-arch2-1. The four services ran as
+  ordinary host processes, not in containers. PostgreSQL ran in a container.
+- **Hardware:** As EXP-001.
+- **Code revision:** Branch `phase-1/shop-services`, the working tree shortly
+  before the commit that adds this record. The readiness check was changed
+  after the measurement to query each service's table; the figures were not
+  re-measured.
+- **Dependencies:** Python 3.14.7, FastAPI 0.143.0, Starlette 1.7.0,
+  uvicorn 0.54.0, SQLAlchemy 2.1.4, psycopg 3.3.6, httpx 0.28.1,
+  pydantic 2.14.0; image `postgres:18-alpine`.
+- **Workload:** One pass of `scripts/smoke.sh`: eight HTTP requests through
+  the gateway, plus a handful of health and readiness requests. No sustained
+  load.
+
+### Test setup and commands
+
+Each service was started with
+`uvicorn shop.<service>.app:create_app --factory --host 127.0.0.1 --port <port>`,
+one worker each. After the smoke test, resident memory was read with
+`ps -o rss= -p <pid>`, and the PostgreSQL container with
+`docker stats --no-stream`.
+
+### Results
+
+| Process | Resident memory |
+|---|---|
+| gateway | 67 MiB |
+| users | 92 MiB |
+| catalog | 93 MiB |
+| checkout | 99 MiB |
+| PostgreSQL (container, limited to 256 MiB) | 35 MiB |
+| **Total** | **about 386 MiB** |
+
+### Observations
+
+- The three services that load SQLAlchemy and the PostgreSQL driver use about
+  25–32 MiB more than the gateway, which loads neither.
+- All 8 smoke checks passed during the run.
+
+### Interpretation
+
+Nearly idle, the whole shop fits in roughly 0.4 GiB. Against about 6 GiB
+available (EXP-001 snapshot) the shop is not what will strain this machine;
+the observability stack is the part to measure next.
+
+### Limitations
+
+- A single run with almost no traffic. Memory under load is unknown.
+- Resident memory counts pages shared between the four processes once per
+  process, so the total overstates what they use together.
+- Host processes, not containers. Whether running in containers changes
+  these figures was not measured.
+
+### Next actions
+
+Repeat inside containers once the owner has built them, and again under load
+in Phase 9.
+
+### Raw artifacts
+
+None kept; the figures above were read from the terminal during the run.

@@ -18,18 +18,25 @@ does the correlation and shows its evidence.
 
 ## Status
 
-**Phase 0 — requirements, architecture and foundations.** Nothing runs yet.
-The live task list is [docs/PROGRESS.md](docs/PROGRESS.md).
+**Phase 1 — building the application to monitor.** The demo shop's code is
+written and verified as local processes; containerizing it is the current
+work. The live task list is [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ### Implemented
 
-Nothing yet.
+- **Demo shop application** (`services/shop/`): gateway, users, catalog and
+  checkout services over one PostgreSQL database, with explicit failure
+  handling between services, liveness and readiness endpoints, JSON logs, a
+  test suite and an end-to-end smoke script.
+
+Not implemented: containers, observability, alerting, incidents,
+investigation. Nothing of SentinelOps itself exists yet.
 
 ### Planned
 
 | Phase | Capability |
 |---|---|
-| 1 | A small containerized e-commerce application to monitor |
+| 1 | Containerizing the demo shop (its code is implemented) |
 | 2 | Metrics, logs and traces flowing into Prometheus, Loki, Tempo and Grafana |
 | 3 | Alerts become deduplicated incidents with a lifecycle and timeline |
 | 4 | An incident launches an AI investigation with evidence-backed findings |
@@ -77,13 +84,51 @@ never assumed to run at once.
 
 ## Quickstart
 
-Nothing to run yet. This section is filled in when Phase 1 produces a working
-stack.
+There is no one-command start yet; that arrives with the container stack.
+Until then the shop runs as four processes, as described under Development.
+
+## Development
+
+All commands run from `services/shop/`.
+
+```bash
+uv sync                      # create .venv and install the locked dependencies
+uv run ruff format .         # format
+uv run ruff check .          # lint
+```
+
+Start one service (each needs its environment variables; the full list is the
+connection contract in [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md)):
+
+```bash
+DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST:PORT/DATABASE' \
+  uv run uvicorn shop.users.app:create_app --factory --port 8001
+```
+
+The database must already contain the tables from `db/init/`.
+
+## Testing
+
+```bash
+uv run pytest                # tests that need no database; the rest are skipped
+
+TEST_DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST:PORT/DATABASE' \
+  uv run pytest              # everything; drops and recreates the shop tables
+```
+
+Point `TEST_DATABASE_URL` only at a database you can afford to wipe.
+
+```bash
+scripts/smoke.sh http://localhost:8000    # end-to-end, against a running gateway
+```
+
+Last verified 2026-10-11: 32 tests passed against PostgreSQL 18, and the
+smoke test passed 8 of 8 against four running processes.
 
 ## Repository conventions
 
-- **Layout (decided, created as needed):** `services/shop/` for the demo
-  application, `sentinelops/` for the platform, `docs/` for everything here.
+- **Layout:** `services/shop/` for the demo application, `docs/` for
+  everything here, and `sentinelops/` for the platform once it exists.
 - **Branches:** `main` holds approved work. Phase work happens on
   `phase-N/<topic>` and merges at the owner's approval.
 - **Commits:** a short type prefix — `feat:`, `fix:`, `docs:`, `test:`,
@@ -96,17 +141,20 @@ stack.
 |---|---|
 | [WORKING_AGREEMENT](docs/WORKING_AGREEMENT.md) | Roles, task labels, phases, rules |
 | [ARCHITECTURE](docs/ARCHITECTURE.md) | Components, connections, diagrams, risks |
+| [PROJECT_MAP](docs/PROJECT_MAP.md) | Where everything is; the connection contract between services |
 | [PROGRESS](docs/PROGRESS.md) | Current phase, tasks, blockers, next steps |
 | [ENGINEERING_DECISIONS](docs/ENGINEERING_DECISIONS.md) | Decision log; major ones in [adr/](docs/adr/) |
 | [LEARNING_JOURNAL](docs/LEARNING_JOURNAL.md) | What has been introduced, practiced and demonstrated |
 | [EXPERIMENTS](docs/EXPERIMENTS.md) | Experiments and measured results |
+| [CHANGELOG](docs/CHANGELOG.md) | Meaningful changes by date |
 
-More documents are added when they have real content: a project map and
-changelog with the first code, an operations guide with the first running
-stack, a debugging log with the first real failure, and one technology guide
-per tool as it is introduced.
+More documents are added when they have real content: an operations guide
+with the first running stack, a debugging log with the first real failure,
+and one technology guide per tool as it is introduced.
 
 ## Known limitations
 
-- No code and no running system yet.
-- The architecture is a proposal until each part is built and verified.
+- The shop is not containerized and has only been run on one machine.
+- The shop has no authentication, no retries and no idempotent orders; the
+  full list is in [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md).
+- Everything beyond the shop is a proposal until it is built and verified.

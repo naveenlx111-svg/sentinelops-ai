@@ -20,8 +20,7 @@ that `main` holds only what has been explicitly approved.
 
 | Blocker | Owner | Unblocks |
 |---|---|---|
-| `docker buildx` is not installed. The first install attempt failed on a stale package index ([DBG-001](INCIDENTS_AND_DEBUGGING.md)); the fix is a full system upgrade and a reboot | Owner | Building the shop image |
-| `docker compose` is unavailable until the same fix, because the hand-installed plugin was moved aside before its replacement arrived | Owner | Running the stack; the owner's other project's Compose commands |
+| The machine has not been restarted since the system upgrade: it runs the old kernel, the old Docker daemon and a mismatched NVIDIA driver ([DBG-001](INCIDENTS_AND_DEBUGGING.md)) | Owner | Starting Docker work on a consistent system |
 
 ## Phase 0 tasks
 
@@ -29,7 +28,7 @@ that `main` holds only what has been explicitly approved.
 |---|---|---|---|
 | P0-1 | Memory baseline and the container OOM lab ([EXP-001](EXPERIMENTS.md)) | ME — OPERATIONS | **Open** |
 | P0-2a | Rename branch to `main` | AGENT IMPLEMENTATION | Done |
-| P0-2b | Install `docker-buildx`; replace the hand-installed Compose binary with the packaged one | ME — OPERATIONS | **Open** — two attempts on 2026-10-12: the first failed on a stale package index, the second was cut short by a restart before anything was installed ([DBG-001](INCIDENTS_AND_DEBUGGING.md)) |
+| P0-2b | Install `docker-buildx`; replace the hand-installed Compose binary with the packaged one | ME — OPERATIONS | Installed 2026-10-12 on the third attempt: Buildx 0.38.0 and Compose 5.6.0, both from the packaged location ([DBG-001](INCIDENTS_AND_DEBUGGING.md)). **Open** until the reboot and its checks |
 | P0-3 | Working agreement in the repository | AGENT IMPLEMENTATION | Done |
 | P0-4 | First usable version defined (D-001) | PAIR PROGRAMMING | Done — approved 2026-10-11 |
 | P0-5 | Owner explains the seven-step failure path back in their own words | ME — MANUAL | **Open** |
@@ -72,8 +71,7 @@ that `main` holds only what has been explicitly approved.
 
 ## Next priorities
 
-1. Owner: P0-2b first — the full system upgrade and reboot from DBG-001.
-   Then P0-1 (OOM lab).
+1. Owner: restart the machine to finish P0-2b. Then P0-1 (OOM lab).
 2. Owner: say whether `phase-1/shop-services` may merge into `main`.
 3. Agent, then owner: P1-2, the Dockerfile lesson and build.
 

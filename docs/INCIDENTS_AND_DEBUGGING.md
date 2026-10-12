@@ -6,7 +6,7 @@ that has not been applied is marked **NOT RUN**.
 
 | ID | Date | Title | Status |
 |---|---|---|---|
-| DBG-001 | 2026-10-12 | `pacman -S` fails with 404 from every mirror | Cause confirmed; fix **NOT RUN** |
+| DBG-001 | 2026-10-12 | `pacman -S` fails with 404 from every mirror | Fixed; the closing reboot and its checks are **NOT RUN** |
 
 ---
 
@@ -15,8 +15,9 @@ that has not been applied is marked **NOT RUN**.
 - **Date:** 2026-10-12
 - **Where:** the development machine, during task P0-2b (install Buildx and
   the packaged Compose plugin).
-- **Status:** Root cause confirmed. The fix is the owner's to run and has
-  **not been run**.
+- **Status:** Fixed by the owner on 2026-10-12: Buildx and Compose are
+  installed and answer. The reboot that completes the upgrade has **not
+  been done**, so the checks that depend on it are **NOT RUN**.
 
 ### Symptom
 
@@ -84,7 +85,7 @@ in the same block as an install it depended on. A pasted block does not stop
 at the first failure, so the working plugin was moved even though its
 replacement never arrived.
 
-### Fix — NOT RUN
+### Fix
 
 Refresh the index and upgrade the whole system in one transaction, adding the
 two new packages, then reboot because the kernel and the NVIDIA driver are
@@ -138,10 +139,46 @@ How to tell the upgrade has finished: pacman prints a numbered
 `:: Running post-transaction hooks...`, and only then returns the shell
 prompt. The reboot comes after that.
 
-### Verification — NOT RUN
+### Third attempt, 2026-10-12 — completed
 
-To be filled in from the owner's output: `uname -r`, `docker version`,
-`docker buildx version`, `docker compose version`, `docker ps`, `nvidia-smi`.
+The owner ran the same command again at 10:34:47 and let it finish.
+`/var/log/pacman.log` records the transaction starting at 11:31:23 and
+completing at 11:31:41, with 561 packages upgraded and 8 installed, among
+them `docker-buildx 0.38.0-1`, `docker-compose 5.6.0-1` and
+`github-cli 2.102.0-1`. The initramfs build for kernel 7.2.9 reported
+"Initcpio image generation successful" and "Unified kernel image generation
+successful". One warning: directory permissions differ on `/boot/`
+(filesystem 700, package 755), which changes nothing.
+
+### Verification
+
+Checked by the agent at 17:47 on 2026-10-12. The machine had not been
+restarted since 10:16, before the upgrade.
+
+| Check | Result |
+|---|---|
+| `docker buildx version` | 0.38.0 |
+| `docker compose version` | 5.6.0 |
+| Plugin files in use, from `docker info` | both under `/usr/lib/docker/cli-plugins/`; no user-level plugin left to shadow them |
+| `pacman -Qu` | nothing pending |
+| Failed systemd units | none |
+| The other project's containers | three, up 8 hours, undisturbed by the upgrade |
+
+Three things show the upgrade is installed but not yet running, which is
+what an upgrade without a reboot looks like:
+
+| Check | On disk | Running |
+|---|---|---|
+| Kernel: `pacman -Q linux` against `uname -r` | 7.2.9 | 7.2.6, whose module directory no longer exists |
+| Docker: client against server in `docker version` | 29.9.0 | 29.8.1 |
+| NVIDIA: library against loaded module | 615.78 | 615.71.09 |
+
+`nvidia-smi` fails with `Failed to initialize NVML: Driver/library version
+mismatch`, as predicted before the upgrade. A kernel module built for 7.2.9
+at version 615.78.08 is present on disk and will load at the next boot.
+
+**NOT RUN:** the reboot, and after it `uname -r`, `docker version`,
+`docker ps` and `nvidia-smi`.
 
 ### Prevention
 

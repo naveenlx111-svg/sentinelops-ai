@@ -8,6 +8,7 @@ Meaningful changes, newest first. Git history has the detail.
 
 - Debugging log, opened with DBG-001: a package install that failed with
   404 from every mirror because the local package index was stale.
+- The repository is on GitHub: `main` and `phase-1/shop-services` pushed.
 
 ## 2026-10-11
 

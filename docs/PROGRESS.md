@@ -20,7 +20,6 @@ that `main` holds only what has been explicitly approved.
 
 | Blocker | Owner | Unblocks |
 |---|---|---|
-| This machine cannot sign in to GitHub: its SSH key is not registered on the owner's account. The repository exists (public, empty) and is connected as `origin` | Owner | Pushing anything |
 | `docker buildx` is not installed. The first install attempt failed on a stale package index ([DBG-001](INCIDENTS_AND_DEBUGGING.md)); the fix is a full system upgrade and a reboot | Owner | Building the shop image |
 | `docker compose` is unavailable until the same fix, because the hand-installed plugin was moved aside before its replacement arrived | Owner | Running the stack; the owner's other project's Compose commands |
 
@@ -38,7 +37,7 @@ that `main` holds only what has been explicitly approved.
 | P0-7 | Initial documents | AGENT IMPLEMENTATION | Done — owner review pending |
 | P0-8 | Risk register (in [ARCHITECTURE.md](ARCHITECTURE.md)) | AGENT IMPLEMENTATION | Done — owner review pending |
 | P0-9 | Repository conventions (in the [README](../README.md)) | AGENT IMPLEMENTATION | Done |
-| P0-10 | Create the GitHub repository and connect it as `origin` | ME — OPERATIONS | **Open** — repository created by the owner and connected on 2026-10-12; the first push is refused until the SSH key is registered |
+| P0-10 | Create the GitHub repository and connect it as `origin` | ME — OPERATIONS | Done — 2026-10-12: the owner created the repository and registered the SSH key; `main` and `phase-1/shop-services` are pushed |
 | P0-11 | Phase 0 gate review | AGENT REVIEW | Waiting on the open tasks |
 
 ## Phase 1 tasks
@@ -74,7 +73,7 @@ that `main` holds only what has been explicitly approved.
 ## Next priorities
 
 1. Owner: P0-2b first — the full system upgrade and reboot from DBG-001.
-   Then P0-1 (OOM lab). P0-10 needs only the SSH key registered on GitHub.
+   Then P0-1 (OOM lab).
 2. Owner: say whether `phase-1/shop-services` may merge into `main`.
 3. Agent, then owner: P1-2, the Dockerfile lesson and build.
 

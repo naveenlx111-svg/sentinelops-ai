@@ -29,7 +29,7 @@ that `main` holds only what has been explicitly approved.
 |---|---|---|---|
 | P0-1 | Memory baseline and the container OOM lab ([EXP-001](EXPERIMENTS.md)) | ME — OPERATIONS | **Open** |
 | P0-2a | Rename branch to `main` | AGENT IMPLEMENTATION | Done |
-| P0-2b | Install `docker-buildx`; replace the hand-installed Compose binary with the packaged one | ME — OPERATIONS | **Open** — attempted 2026-10-12, failed, cause confirmed ([DBG-001](INCIDENTS_AND_DEBUGGING.md)) |
+| P0-2b | Install `docker-buildx`; replace the hand-installed Compose binary with the packaged one | ME — OPERATIONS | **Open** — two attempts on 2026-10-12: the first failed on a stale package index, the second was cut short by a restart before anything was installed ([DBG-001](INCIDENTS_AND_DEBUGGING.md)) |
 | P0-3 | Working agreement in the repository | AGENT IMPLEMENTATION | Done |
 | P0-4 | First usable version defined (D-001) | PAIR PROGRAMMING | Done — approved 2026-10-11 |
 | P0-5 | Owner explains the seven-step failure path back in their own words | ME — MANUAL | **Open** |

@@ -110,6 +110,34 @@ Checked before recommending this, on 2026-10-12:
   and the Docker service is enabled at boot, so they should return after the
   reboot. To be verified.
 
+### Second attempt, 2026-10-12 — did not complete
+
+The owner ran the fix. `/var/log/pacman.log` and the system journal show:
+
+| Time | Event |
+|---|---|
+| 10:13:50 | `pacman -Syu docker-buildx docker-compose github-cli`; package index refreshed |
+| 10:13:53 | "starting full system upgrade" |
+| 10:15:55 | The machine begins a normal shutdown |
+| 10:16:24 | The machine is running again |
+
+No package was downloaded, installed or upgraded in those two minutes: the
+log has no `installed` or `upgraded` line for the day, the package cache holds
+nothing new, and no lock file was left behind. The machine restarted before
+the transaction had done any work. The log does not say whether the prompt
+was answered.
+
+State afterwards, checked at 10:31: Buildx and Compose still absent, kernel
+still 7.2.6, Docker 29.8.1, the other project's three containers back up on
+their own after the restart. The system is consistent, but the package index
+is now newer than the installed packages, so nothing should be installed with
+a plain `pacman -S` until the full upgrade has run.
+
+How to tell the upgrade has finished: pacman prints a numbered
+`(n/N) upgrading ...` line for every package, then
+`:: Running post-transaction hooks...`, and only then returns the shell
+prompt. The reboot comes after that.
+
 ### Verification — NOT RUN
 
 To be filled in from the owner's output: `uname -r`, `docker version`,

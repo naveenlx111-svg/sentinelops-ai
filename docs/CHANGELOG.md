@@ -2,6 +2,13 @@
 
 Meaningful changes, newest first. Git history has the detail.
 
+## 2026-10-12
+
+### Added
+
+- Debugging log, opened with DBG-001: a package install that failed with
+  404 from every mirror because the local package index was stale.
+
 ## 2026-10-11
 
 ### Added

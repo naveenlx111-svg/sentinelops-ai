@@ -67,3 +67,27 @@ operate and debug the system.
   `OOMKilled` (lab track).
 - **Recommended next exercise:** The stretch task in EXP-001: find a running
   container's cgroup directory and read `memory.max` and `memory.events`.
+
+### 2026-10-12 — How a package install is wired: index, mirrors, partial upgrades
+
+- **Status:** Introduced. The owner ran the install and met the failure; the
+  diagnosis was the agent's.
+- **Why we needed it:** Installing Buildx failed with 404 from every mirror
+  ([DBG-001](INCIDENTS_AND_DEBUGGING.md)).
+- **Concepts explained:** pacman reads a local copy of the repository index,
+  builds a file name from it and fetches that file from a mirror; mirrors keep
+  only the current build; a stale index therefore produces 404s; why `-Sy`
+  without `-u` is a partial upgrade; a transaction downloads everything before
+  changing anything; why a kernel upgrade needs a reboot before new kernel
+  modules can load.
+- **Important commands:** `pacman -Syu`, `pacman -Si`, `pacman -Q`,
+  `/var/log/pacman.log`, `ls -l /var/lib/pacman/sync/`.
+- **Problems encountered:** DBG-001.
+- **What remains unclear:** To be judged once the owner has run the fix and
+  explained the 404 in their own words.
+- **Related technologies:** The same shape returns with container images: a
+  tag is a name in an index, a registry holds the content, and a stale or
+  moved tag gives "manifest unknown". Topic 2 in the roadmap.
+- **Recommended next exercise:** After the upgrade, find in
+  `/var/log/pacman.log` the line where `docker-buildx` was installed and the
+  line where `linux` was upgraded.

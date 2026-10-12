@@ -9,7 +9,9 @@ The operational source of truth. Updated at the end of every working session.
 - **Milestone:** a containerized shop that passes the smoke test
 - **State:** the shop's application code is written and verified as local
   processes on branch `phase-1/shop-services`. It is not on `main` and not
-  containerized. The next work is the owner's.
+  containerized. The tools are in place: Buildx and Compose are installed,
+  and the owner works through VS Code's Containers view. The next work is
+  the owner's: the shop's Dockerfile.
 
 The owner said "start" on 2026-10-11 and delegated all application code
 (D-002). The agent took that as the go-ahead to write the shop, because the
@@ -43,13 +45,13 @@ that `main` holds only what has been explicitly approved.
 | ID | Task | Label | Depends on | Status |
 |---|---|---|---|---|
 | P1-1 | Shop services, schema, tests, smoke script | AGENT IMPLEMENTATION | — | Done on the branch; owner approval to merge pending |
-| P1-2 | Lesson: images, layers, build cache; then write the shop's Dockerfile and build the image | ME — OPERATIONS | P0-2b | Next |
+| P1-2 | Lesson: images, layers, build cache; then write the shop's Dockerfile and build the image | ME — OPERATIONS | P0-2b | **In progress** — lesson delivered 2026-10-12 ([guide](TECHNOLOGY_GUIDES/docker-images.md)); the Dockerfile, the build and the seven checks are the owner's and not yet done |
 | P1-3 | Lesson: container networking and Compose; then write the Compose file for PostgreSQL and the four services | ME — OPERATIONS | P1-2 | Not started |
 | P1-4 | Initialise the database inside the stack from `db/init/` | ME — OPERATIONS | P1-3 | Not started |
 | P1-5 | Health checks, start-up ordering and memory limits in Compose | ME — OPERATIONS | P1-3 | Not started |
 | P1-6 | Run `scripts/smoke.sh` against the composed stack; review of the result | ME — OPERATIONS, then AGENT REVIEW | P1-4 | Not started |
 | P1-7 | Debugging exercises on the running stack | ME — OPERATIONS | P1-6 | Not started |
-| P1-8 | Technology guides for Docker images and Docker networking, written alongside the lessons | AGENT IMPLEMENTATION | P1-2, P1-3 | Not started |
+| P1-8 | Technology guides for Docker images and Docker networking, written alongside the lessons | AGENT IMPLEMENTATION | P1-2, P1-3 | Docker images written; networking not started |
 | P1-9 | Fault scripts that record ground truth | AGENT IMPLEMENTATION | P1-6 | Not started |
 | P1-10 | Operations guide with the procedures the owner has verified | AGENT IMPLEMENTATION | P1-6 | Not started |
 | P1-11 | Phase 1 gate review | AGENT REVIEW | all | Not started |
@@ -59,7 +61,7 @@ that `main` holds only what has been explicitly approved.
 | Deliverable | Evidence |
 |---|---|
 | Approved architecture and plan | Owner approval on 2026-10-11; [ARCHITECTURE.md](ARCHITECTURE.md), D-001 |
-| Shop application code | 2026-10-11: 32 tests passed against PostgreSQL 18; smoke test 8 of 8 through the gateway with four real processes; failure behaviour in [PROJECT_MAP.md](PROJECT_MAP.md) |
+| Shop application code | 2026-10-11: 32 tests passed against PostgreSQL 18; smoke test 8 of 8 through the gateway with four real processes; failure behaviour in [PROJECT_MAP.md](PROJECT_MAP.md). Re-checked 2026-10-12 after the system upgrade (Python 3.14.8, uv 0.13.0): lockfile valid, lint clean, 17 passed and 15 skipped without a database |
 
 ## Pending tests
 

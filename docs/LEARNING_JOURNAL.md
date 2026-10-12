@@ -15,7 +15,7 @@ operate and debug the system.
 | # | Topic | Depth | Needed for | Status |
 |---|---|---|---|---|
 | 1 | Linux processes: ports, signals, cgroups, memory | hands-on | Everything containerized | Introduced |
-| 2 | Docker images, layers, build cache, registries | hands-on | Phase 1 | Not started |
+| 2 | Docker images, layers, build cache, registries | hands-on | Phase 1 | Introduced |
 | 3 | Docker networking and Compose | hands-on | Phase 1 | Not started |
 | 4 | How the demo services talk: HTTP, timeouts, health endpoints, config by environment | operate and debug | Phase 1 | Not started |
 | 5 | Metrics, Prometheus, PromQL | hands-on | Phase 2 | Not started |
@@ -93,3 +93,28 @@ operate and debug the system.
 - **Recommended next exercise:** After the upgrade, find in
   `/var/log/pacman.log` the line where `docker-buildx` was installed and the
   line where `linux` was upgraded.
+
+### 2026-10-12 — Docker images, layers and the build cache
+
+- **Status:** Introduced. The exercises are assigned and not yet done.
+- **Why we needed it:** Phase 1; the shop has to become an image before it
+  can run in Compose or Kubernetes.
+- **Concepts explained:** image = layers + config + manifest; tag versus
+  digest; which instructions create layers; why a deleted file still occupies
+  the image; how the cache decides to reuse a step and why instruction order
+  sets rebuild time; the build context; who dials whom during a build.
+- **Important commands:** `docker build`, `docker history`,
+  `docker image inspect`, `docker image ls`, `docker run --rm`,
+  `docker image rm`, `docker builder prune`, `docker buildx du`.
+- **Implementation references:**
+  [TECHNOLOGY_GUIDES/docker-images.md](TECHNOLOGY_GUIDES/docker-images.md)
+- **Practical exercises:** Part 1, read `python:3.14-slim`. Part 2, write
+  `services/shop/Dockerfile` to requirements R1–R8 and run the seven checks.
+- **Problems encountered:** None yet.
+- **What remains unclear:** To be judged from the owner's Dockerfile, the
+  check results and the knowledge-check answers.
+- **Related technologies:** Compose builds and runs these images (topic 3);
+  kind and Kubernetes pull them by tag or digest (topic 8); registries and
+  the pipeline push them (topic 13).
+- **Recommended next exercise:** Check 6 in the guide: change one source
+  line, rebuild, and explain from the output which steps ran and why.

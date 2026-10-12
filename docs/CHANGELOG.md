@@ -9,6 +9,13 @@ Meaningful changes, newest first. Git history has the detail.
 - Debugging log, opened with DBG-001: a package install that failed with
   404 from every mirror because the local package index was stale.
 - The repository is on GitHub: `main` and `phase-1/shop-services` pushed.
+- Technology guide: Docker images, layers and the build cache, with the
+  requirements for the shop's Dockerfile.
+
+### Changed
+
+- Development machine upgraded: Docker 29.9.0 with Buildx 0.38.0 and
+  Compose 5.6.0.
 
 ## 2026-10-11
 

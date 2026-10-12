@@ -147,11 +147,12 @@ smoke test passed 8 of 8 against four running processes.
 | [LEARNING_JOURNAL](docs/LEARNING_JOURNAL.md) | What has been introduced, practiced and demonstrated |
 | [EXPERIMENTS](docs/EXPERIMENTS.md) | Experiments and measured results |
 | [INCIDENTS_AND_DEBUGGING](docs/INCIDENTS_AND_DEBUGGING.md) | Real failures and how each was diagnosed |
+| [TECHNOLOGY_GUIDES](docs/TECHNOLOGY_GUIDES/) | One lesson per tool: [Docker images](docs/TECHNOLOGY_GUIDES/docker-images.md) |
 | [CHANGELOG](docs/CHANGELOG.md) | Meaningful changes by date |
 
 More documents are added when they have real content: an operations guide
-with the first running stack, and one technology guide per tool as it is
-introduced.
+with the first running stack, and a technology guide for each further tool
+as it is introduced.
 
 ## Known limitations
 

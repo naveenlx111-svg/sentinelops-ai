@@ -72,8 +72,8 @@ operate and debug the system.
 
 - **Status:** Practiced. The owner ran the full upgrade to completion on
   2026-10-12, on the third attempt (evidence: `/var/log/pacman.log`, in
-  DBG-001). The diagnosis was the agent's, and the closing reboot is still
-  to do.
+  DBG-001) and restarted the machine afterwards. The diagnosis was the
+  agent's.
 - **Why we needed it:** Installing Buildx failed with 404 from every mirror
   ([DBG-001](INCIDENTS_AND_DEBUGGING.md)).
 - **Concepts explained:** pacman reads a local copy of the repository index,

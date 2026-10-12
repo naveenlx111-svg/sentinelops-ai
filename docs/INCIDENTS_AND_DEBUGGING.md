@@ -6,7 +6,7 @@ that has not been applied is marked **NOT RUN**.
 
 | ID | Date | Title | Status |
 |---|---|---|---|
-| DBG-001 | 2026-10-12 | `pacman -S` fails with 404 from every mirror | Fixed; the closing reboot and its checks are **NOT RUN** |
+| DBG-001 | 2026-10-12 | `pacman -S` fails with 404 from every mirror | Closed 2026-10-12, verified after reboot |
 
 ---
 
@@ -15,9 +15,8 @@ that has not been applied is marked **NOT RUN**.
 - **Date:** 2026-10-12
 - **Where:** the development machine, during task P0-2b (install Buildx and
   the packaged Compose plugin).
-- **Status:** Fixed by the owner on 2026-10-12: Buildx and Compose are
-  installed and answer. The reboot that completes the upgrade has **not
-  been done**, so the checks that depend on it are **NOT RUN**.
+- **Status:** Closed. Fixed by the owner on 2026-10-12 and verified after
+  the reboot the same day.
 
 ### Symptom
 
@@ -177,8 +176,29 @@ what an upgrade without a reboot looks like:
 mismatch`, as predicted before the upgrade. A kernel module built for 7.2.9
 at version 615.78.08 is present on disk and will load at the next boot.
 
-**NOT RUN:** the reboot, and after it `uname -r`, `docker version`,
-`docker ps` and `nvidia-smi`.
+### After the reboot
+
+The owner restarted the machine at 17:52. Checked by the agent at 17:53:
+
+| Check | Result |
+|---|---|
+| `uname -r` | 7.2.9-arch1-1, matching the installed package |
+| `docker version` | client 29.9.0, server 29.9.0 |
+| `docker buildx version`, `docker compose version` | 0.38.0, 5.6.0 |
+| `nvidia-smi` | driver 615.78.08, matching the loaded module |
+| `docker ps` | the other project's three containers came back on their own |
+| A throwaway container from an image already on disk | ran and exited cleanly |
+| `pacman -Qu` | nothing pending |
+
+### Side effect of the upgrade — open, not diagnosed
+
+Since the upgrade to systemd 262, four TPM measurement units fail at boot
+(`systemd-tpm2-setup-early`, `systemd-pcrproduct` and two
+`systemd-pcrlogin@` instances) with
+`Failed to initialize NvPCR index: No such file or directory`, and
+`systemctl is-system-running` reports `degraded`. They did not fail on the
+two boots before the upgrade. Nothing in this project depends on them and
+Docker and the GPU are unaffected. The cause has not been investigated.
 
 ### Prevention
 

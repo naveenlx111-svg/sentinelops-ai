@@ -150,7 +150,7 @@ smoke test passed 8 of 8 against four running processes.
 | [LEARNING_JOURNAL](docs/LEARNING_JOURNAL.md) | What has been introduced, practiced and demonstrated |
 | [EXPERIMENTS](docs/EXPERIMENTS.md) | Experiments and measured results |
 | [INCIDENTS_AND_DEBUGGING](docs/INCIDENTS_AND_DEBUGGING.md) | Real failures and how each was diagnosed |
-| [TECHNOLOGY_GUIDES](docs/TECHNOLOGY_GUIDES/) | One lesson per tool: [Docker images](docs/TECHNOLOGY_GUIDES/docker-images.md) |
+| [TECHNOLOGY_GUIDES](docs/TECHNOLOGY_GUIDES/) | One lesson per tool: [Docker images](docs/TECHNOLOGY_GUIDES/docker-images.md), [Docker networking and Compose](docs/TECHNOLOGY_GUIDES/docker-networking-and-compose.md) |
 | [CHANGELOG](docs/CHANGELOG.md) | Meaningful changes by date |
 
 More documents are added when they have real content: an operations guide

@@ -10,6 +10,8 @@ Meaningful changes, newest first. Git history has the detail.
   image `sentinelops/shop:dev` for all four shop services.
 - Results of the image checks and the build-cache experiment, in the Docker
   images guide.
+- Technology guide: Docker networking and Compose, with the requirements
+  for the shop's Compose file.
 
 ## 2026-10-12
 

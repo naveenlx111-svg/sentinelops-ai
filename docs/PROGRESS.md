@@ -47,12 +47,12 @@ that `main` holds only what has been explicitly approved.
 |---|---|---|---|---|
 | P1-1 | Shop services, schema, tests, smoke script | AGENT IMPLEMENTATION | — | Done on the branch; owner approval to merge pending |
 | P1-2 | Lesson: images, layers, build cache; then write the shop's Dockerfile and build the image | ME — OPERATIONS | P0-2b | Done — 2026-10-13: the owner wrote the Dockerfile and `.dockerignore` in a step-by-step guided build; the seven checks pass ([results](TECHNOLOGY_GUIDES/docker-images.md#results)). The knowledge check is not yet answered |
-| P1-3 | Lesson: container networking and Compose; then write the Compose file for PostgreSQL and the four services | ME — OPERATIONS | P1-2 | Not started |
+| P1-3 | Lesson: container networking and Compose; then write the Compose file for PostgreSQL and the four services | ME — OPERATIONS | P1-2 | **In progress** — lesson written 2026-10-13 ([guide](TECHNOLOGY_GUIDES/docker-networking-and-compose.md)); the Compose file and the nine checks are the owner's and not yet done |
 | P1-4 | Initialise the database inside the stack from `db/init/` | ME — OPERATIONS | P1-3 | Not started |
 | P1-5 | Health checks, start-up ordering and memory limits in Compose | ME — OPERATIONS | P1-3 | Not started |
 | P1-6 | Run `scripts/smoke.sh` against the composed stack; review of the result | ME — OPERATIONS, then AGENT REVIEW | P1-4 | Not started |
 | P1-7 | Debugging exercises on the running stack | ME — OPERATIONS | P1-6 | Not started |
-| P1-8 | Technology guides for Docker images and Docker networking, written alongside the lessons | AGENT IMPLEMENTATION | P1-2, P1-3 | Docker images written; networking not started |
+| P1-8 | Technology guides for Docker images and Docker networking, written alongside the lessons | AGENT IMPLEMENTATION | P1-2, P1-3 | Both written. The networking guide's checks are **NOT RUN** |
 | P1-9 | Fault scripts that record ground truth | AGENT IMPLEMENTATION | P1-6 | Not started |
 | P1-10 | Operations guide with the procedures the owner has verified | AGENT IMPLEMENTATION | P1-6 | Not started |
 | P1-11 | Phase 1 gate review | AGENT REVIEW | all | Not started |
@@ -75,8 +75,8 @@ that `main` holds only what has been explicitly approved.
 
 ## Next priorities
 
-1. Agent, then owner: P1-3, the networking and Compose lesson, then the
-   Compose file for PostgreSQL and the four services.
+1. Owner: P1-3, write the Compose file for PostgreSQL and the four
+   services, guided step by step.
 2. Owner: say whether `phase-1/shop-services` may merge into `main`.
 3. Owner: P0-1 (OOM lab) and P0-5 are still open, and so is the knowledge
    check in the Docker images guide.

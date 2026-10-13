@@ -16,7 +16,7 @@ operate and debug the system.
 |---|---|---|---|---|
 | 1 | Linux processes: ports, signals, cgroups, memory | hands-on | Everything containerized | Introduced |
 | 2 | Docker images, layers, build cache, registries | hands-on | Phase 1 | Practiced (images, layers, cache); registries Introduced |
-| 3 | Docker networking and Compose | hands-on | Phase 1 | Not started |
+| 3 | Docker networking and Compose | hands-on | Phase 1 | Introduced |
 | 4 | How the demo services talk: HTTP, timeouts, health endpoints, config by environment | operate and debug | Phase 1 | Not started |
 | 5 | Metrics, Prometheus, PromQL | hands-on | Phase 2 | Not started |
 | 6 | OpenTelemetry: context propagation, OTLP, the Collector | hands-on | Phase 2 | Not started |
@@ -130,3 +130,31 @@ operate and debug the system.
 - **Recommended next exercise:** Repeat check 6 alone: change one source
   line, rebuild, and say from the terminal output which steps ran and why.
   Then the guide's five knowledge-check questions.
+
+### 2026-10-13 — Docker networking and Compose
+
+- **Status:** Introduced. The exercise is assigned and not yet done.
+- **Why we needed it:** The image runs one program. The shop is four
+  services and a database that have to find each other.
+- **Concepts explained:** one network namespace per container, so
+  `localhost` is the container itself; a bridge network as a virtual switch;
+  name lookups by service name on a network you create; publishing a port
+  and what the address on the left side controls; Compose as a client of
+  the Docker Engine that makes reality match a file; volumes; keeping a
+  password out of a committed file with `.env`.
+- **Important commands:** `docker compose config`, `up -d`, `ps`, `logs`,
+  `exec`, `down`; `docker network ls`, `docker network inspect`;
+  `ss -ltn`.
+- **Implementation references:**
+  [TECHNOLOGY_GUIDES/docker-networking-and-compose.md](TECHNOLOGY_GUIDES/docker-networking-and-compose.md)
+- **Practical exercises:** Write `compose.yaml` to requirements C1–C7 and
+  run the nine checks.
+- **Problems encountered:** None yet.
+- **What remains unclear:** To be judged from the owner's Compose file, the
+  check results and the knowledge-check answers.
+- **Related technologies:** Kubernetes Services and cluster DNS do the same
+  job as Compose service names (topic 8); Prometheus will reach its scrape
+  targets by these names (topic 5).
+- **Recommended next exercise:** Check 4 in the guide: resolve one service's
+  name from inside another container and find that address in
+  `docker network inspect`.

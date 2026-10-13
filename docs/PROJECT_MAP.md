@@ -10,6 +10,8 @@ application code.
 README.md
 docs/                      everything in the documentation index
 services/shop/             the demo application SentinelOps monitors
+  Dockerfile               builds the image sentinelops/shop:dev
+  .dockerignore            what the build must not send to the builder
   pyproject.toml           dependencies and tool settings
   uv.lock                  exact resolved versions; builds install from this
   .python-version          3.14
@@ -32,8 +34,8 @@ services/shop/             the demo application SentinelOps monitors
   tests/                   pytest suite
 ```
 
-Not yet present: container build files, Compose files, Kubernetes manifests,
-the SentinelOps platform itself.
+Not yet present: Compose files, Kubernetes manifests, the SentinelOps
+platform itself.
 
 ## The shop: one package, four processes
 

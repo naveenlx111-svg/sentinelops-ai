@@ -1,9 +1,9 @@
 # Docker images, layers and the build cache
 
 The lesson for task P1-2. Written 2026-10-12. Everything under "Real
-example" was read from the development machine that day. The exercises are
-the owner's and are **NOT RUN** until their results are recorded in
-[LEARNING_JOURNAL.md](../LEARNING_JOURNAL.md).
+example" was read from the development machine that day. The owner did both
+exercises on 2026-10-12 and 2026-10-13; what happened is under
+[Results](#results). The knowledge check is **NOT RUN**.
 
 ## What an image is
 
@@ -230,6 +230,70 @@ Run each check and compare with what the requirement predicts.
 
 `--rm` on `docker run` deletes the container when it exits, so these checks
 leave nothing behind.
+
+## Results
+
+The owner wrote [`services/shop/Dockerfile`](../../services/shop/Dockerfile)
+and `.dockerignore` one instruction at a time, building after each, with the
+agent naming each step and checking the result. The image as built on
+2026-10-13: `sentinelops/shop:dev`, 312 MB, 11 layers, user `10001`, working
+directory `/app`, command inherited from the base image (`python3`).
+
+| Check | Observed |
+|---|---|
+| 1 | `ok`, for all four service modules |
+| 2 | `uid=10001(shop) gid=10001(shop)` |
+| 3 | `exec: "pytest": executable file not found in $PATH` |
+| 4 | `ConfigError: cannot start, bad environment configuration: DATABASE_URL: Field required` |
+| 5 | Every step `CACHED`; the build took 1.0 s |
+| 6 | See below |
+| 7 | `docker history`: dependencies 54.2 MB, the uv binary 45.1 MB, source 86 kB, on base layers of about 135 MB, about 234 MB in all. `docker image ls` reports 312 MB; the difference has not been looked into |
+
+Also checked: `/app` holds `.venv`, `pyproject.toml`, `src` and `uv.lock`
+and nothing else; no `tests/` or cache directories; the files are owned by
+root and uid 10001 cannot write to `/app`; the image's environment holds
+only `PATH` and the base image's two Python variables.
+
+Check 6 was run twice, because the first result led to a change.
+
+| Step | First Dockerfile, one blank line added under `src/` | After moving `useradd` up, same change |
+|---|---|---|
+| `WORKDIR /app` | CACHED | CACHED |
+| `RUN useradd --uid 10001 shop` | ran (it was the last `RUN`) | CACHED |
+| `COPY --from=...uv` | CACHED | CACHED |
+| `COPY pyproject.toml uv.lock ./` | CACHED | CACHED |
+| `RUN uv sync ... --no-install-project` | CACHED | CACHED |
+| `COPY src ./src` | ran | ran |
+| `RUN uv sync --locked --no-dev` | ran | ran |
+
+The first column is the owner's build, read from `docker buildx history
+logs`. The second is the agent's build of a scratch copy of the context with
+one line changed, tagged separately and removed afterwards. Undoing the
+change made `COPY src` report `CACHED` again: the cache compares file
+contents, not modification times.
+
+What it cost to move one line: the build after the move ran every step below
+it again, and the dependency step took 376 s on that day's connection. That
+is the download R4 exists to avoid.
+
+Two things met on the way:
+
+- **A mistyped tag.** The first build was tagged `sentinelops/shops:dev`.
+  `docker run sentinelops/shop:dev` then answered `pull access denied ...
+  repository does not exist`: with no local image of that name, Docker asked
+  Docker Hub. Fixed with `docker tag` and `docker image rm` on the wrong
+  name.
+- **A moved base tag.** VS Code builds with `--pull`, which resolved
+  `python:3.14-slim` to digest `a2b82f3c...` at the registry. The local tag
+  still names `0741d101...`, an image created on 2026-10-01. A build of the
+  same Dockerfile without `--pull` used the local one and ran every step
+  from `WORKDIR` on again, because each step sits on a different base; the
+  agent stopped it during the dependency download. This is knowledge check
+  question 5, observed.
+
+Not yet decided, and left for the owner: the uv binary stays in the final
+image (a multi-stage build would leave it behind), and the image sets no
+default command of its own.
 
 ## Debugging
 

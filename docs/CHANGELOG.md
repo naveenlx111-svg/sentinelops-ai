@@ -2,6 +2,15 @@
 
 Meaningful changes, newest first. Git history has the detail.
 
+## 2026-10-13
+
+### Added
+
+- `services/shop/Dockerfile` and `.dockerignore`, written by the owner: the
+  image `sentinelops/shop:dev` for all four shop services.
+- Results of the image checks and the build-cache experiment, in the Docker
+  images guide.
+
 ## 2026-10-12
 
 ### Added

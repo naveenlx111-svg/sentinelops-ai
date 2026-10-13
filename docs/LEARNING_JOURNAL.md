@@ -15,7 +15,7 @@ operate and debug the system.
 | # | Topic | Depth | Needed for | Status |
 |---|---|---|---|---|
 | 1 | Linux processes: ports, signals, cgroups, memory | hands-on | Everything containerized | Introduced |
-| 2 | Docker images, layers, build cache, registries | hands-on | Phase 1 | Introduced |
+| 2 | Docker images, layers, build cache, registries | hands-on | Phase 1 | Practiced (images, layers, cache); registries Introduced |
 | 3 | Docker networking and Compose | hands-on | Phase 1 | Not started |
 | 4 | How the demo services talk: HTTP, timeouts, health endpoints, config by environment | operate and debug | Phase 1 | Not started |
 | 5 | Metrics, Prometheus, PromQL | hands-on | Phase 2 | Not started |
@@ -96,7 +96,10 @@ operate and debug the system.
 
 ### 2026-10-12 — Docker images, layers and the build cache
 
-- **Status:** Introduced. The exercises are assigned and not yet done.
+- **Status:** Practiced. On 2026-10-12 and 2026-10-13 the owner wrote
+  `services/shop/Dockerfile` and `.dockerignore` and built the image from
+  VS Code, one instruction at a time. The agent named each instruction and
+  checked each result, so this is guided practice, not independent work.
 - **Why we needed it:** Phase 1; the shop has to become an image before it
   can run in Compose or Kubernetes.
 - **Concepts explained:** image = layers + config + manifest; tag versus
@@ -110,11 +113,20 @@ operate and debug the system.
   [TECHNOLOGY_GUIDES/docker-images.md](TECHNOLOGY_GUIDES/docker-images.md)
 - **Practical exercises:** Part 1, read `python:3.14-slim`. Part 2, write
   `services/shop/Dockerfile` to requirements R1–R8 and run the seven checks.
-- **Problems encountered:** None yet.
-- **What remains unclear:** To be judged from the owner's Dockerfile, the
-  check results and the knowledge-check answers.
+  Both done; results are in the guide.
+- **Problems encountered:** A build tagged `sentinelops/shops:dev` by
+  mistake, which made `docker run` ask Docker Hub for a repository that does
+  not exist; fixed by retagging. The inspect output has no `User` key for an
+  image that runs as root, which the agent's instructions had not allowed
+  for.
+- **What remains unclear:** Three things, from what was observed. Images
+  and containers were mixed up at the start of part 1. In the cache
+  experiment the owner ran the builds but did not read which steps were
+  cached; the agent read that from the build logs and explained it. The
+  knowledge check has not been answered, so the status stops at Practiced.
 - **Related technologies:** Compose builds and runs these images (topic 3);
   kind and Kubernetes pull them by tag or digest (topic 8); registries and
   the pipeline push them (topic 13).
-- **Recommended next exercise:** Check 6 in the guide: change one source
-  line, rebuild, and explain from the output which steps ran and why.
+- **Recommended next exercise:** Repeat check 6 alone: change one source
+  line, rebuild, and say from the terminal output which steps ran and why.
+  Then the guide's five knowledge-check questions.

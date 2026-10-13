@@ -5,13 +5,14 @@ The operational source of truth. Updated at the end of every working session.
 ## Now
 
 - **Phase:** 0 closing, 1 started
-- **Last updated:** 2026-10-12
+- **Last updated:** 2026-10-13
 - **Milestone:** a containerized shop that passes the smoke test
 - **State:** the shop's application code is written and verified as local
-  processes on branch `phase-1/shop-services`. It is not on `main` and not
-  containerized. The tools are in place: Buildx and Compose are installed,
-  and the owner works through VS Code's Containers view. The next work is
-  the owner's: the shop's Dockerfile.
+  processes on branch `phase-1/shop-services`, which is not on `main`. The
+  owner has written the shop's Dockerfile and built the image
+  `sentinelops/shop:dev`; it passes the image checks. No container of it
+  has served a request yet: nothing connects the services to each other or
+  to a database. The next work is the owner's: the Compose file.
 
 The owner said "start" on 2026-10-11 and delegated all application code
 (D-002). The agent took that as the go-ahead to write the shop, because the
@@ -45,7 +46,7 @@ that `main` holds only what has been explicitly approved.
 | ID | Task | Label | Depends on | Status |
 |---|---|---|---|---|
 | P1-1 | Shop services, schema, tests, smoke script | AGENT IMPLEMENTATION | — | Done on the branch; owner approval to merge pending |
-| P1-2 | Lesson: images, layers, build cache; then write the shop's Dockerfile and build the image | ME — OPERATIONS | P0-2b | **In progress** — lesson delivered 2026-10-12 ([guide](TECHNOLOGY_GUIDES/docker-images.md)); the Dockerfile, the build and the seven checks are the owner's and not yet done |
+| P1-2 | Lesson: images, layers, build cache; then write the shop's Dockerfile and build the image | ME — OPERATIONS | P0-2b | Done — 2026-10-13: the owner wrote the Dockerfile and `.dockerignore` in a step-by-step guided build; the seven checks pass ([results](TECHNOLOGY_GUIDES/docker-images.md#results)). The knowledge check is not yet answered |
 | P1-3 | Lesson: container networking and Compose; then write the Compose file for PostgreSQL and the four services | ME — OPERATIONS | P1-2 | Not started |
 | P1-4 | Initialise the database inside the stack from `db/init/` | ME — OPERATIONS | P1-3 | Not started |
 | P1-5 | Health checks, start-up ordering and memory limits in Compose | ME — OPERATIONS | P1-3 | Not started |
@@ -61,21 +62,24 @@ that `main` holds only what has been explicitly approved.
 | Deliverable | Evidence |
 |---|---|
 | Approved architecture and plan | Owner approval on 2026-10-11; [ARCHITECTURE.md](ARCHITECTURE.md), D-001 |
+| Shop image `sentinelops/shop:dev` | 2026-10-13: built by the owner from `services/shop/Dockerfile`; runs as uid 10001, imports all four services, has no dev tools and no environment-specific settings, and a source change rebuilds without downloading dependencies ([results](TECHNOLOGY_GUIDES/docker-images.md#results)) |
 | Shop application code | 2026-10-11: 32 tests passed against PostgreSQL 18; smoke test 8 of 8 through the gateway with four real processes; failure behaviour in [PROJECT_MAP.md](PROJECT_MAP.md). Re-checked 2026-10-12 after the system upgrade (Python 3.14.8, uv 0.13.0): lockfile valid, lint clean, 17 passed and 15 skipped without a database |
 
 ## Pending tests
 
-- The shop has not been run in containers. Everything about container
-  networking, image contents and start-up order is unverified.
+- No service has been started from the image with a working
+  configuration. Container networking, database initialisation and start-up
+  order are unverified.
 - Timeout behaviour (504) is covered by unit tests only; it has not been
   observed with a really slow service.
 
 ## Next priorities
 
-1. Owner: P1-2, write the shop's Dockerfile and build the image. P0-1 (OOM
-   lab) is still open.
+1. Agent, then owner: P1-3, the networking and Compose lesson, then the
+   Compose file for PostgreSQL and the four services.
 2. Owner: say whether `phase-1/shop-services` may merge into `main`.
-3. Agent, then owner: P1-2, the Dockerfile lesson and build.
+3. Owner: P0-1 (OOM lab) and P0-5 are still open, and so is the knowledge
+   check in the Docker images guide.
 
 ## Links
 

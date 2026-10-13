@@ -19,8 +19,8 @@ does the correlation and shows its evidence.
 ## Status
 
 **Phase 1 — building the application to monitor.** The demo shop's code is
-written and verified as local processes; containerizing it is the current
-work. The live task list is [docs/PROGRESS.md](docs/PROGRESS.md).
+written and verified as local processes, and it builds into a container
+image. Connecting the services in a Compose stack is the current work. The live task list is [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ### Implemented
 
@@ -28,8 +28,11 @@ work. The live task list is [docs/PROGRESS.md](docs/PROGRESS.md).
   checkout services over one PostgreSQL database, with explicit failure
   handling between services, liveness and readiness endpoints, JSON logs, a
   test suite and an end-to-end smoke script.
+- **Shop container image** (`services/shop/Dockerfile`): one image for all
+  four services, running as a non-root user. Built and checked locally; not
+  published to a registry.
 
-Not implemented: containers, observability, alerting, incidents,
+Not implemented: the container stack, observability, alerting, incidents,
 investigation. Nothing of SentinelOps itself exists yet.
 
 ### Planned
@@ -156,7 +159,8 @@ as it is introduced.
 
 ## Known limitations
 
-- The shop is not containerized and has only been run on one machine.
+- The shop has an image but has not been run as a container stack, and has
+  only been run on one machine.
 - The shop has no authentication, no retries and no idempotent orders; the
   full list is in [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md).
 - Everything beyond the shop is a proposal until it is built and verified.
